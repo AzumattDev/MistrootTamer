@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
-using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;

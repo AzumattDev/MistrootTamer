@@ -5,7 +5,6 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using HarmonyLib;
 using JetBrains.Annotations;
 using PieceManager;
 using ServerSync;
@@ -149,22 +148,23 @@ namespace MistrootTamer
                 Config.Save();
             }
         }
-
+        
+        
         private void UpdateMistrootComponents()
         {
-            foreach (ParticleMist particleMist in Resources.FindObjectsOfTypeAll<ParticleMist>().Where(x => x.transform.root.gameObject.name.Replace("(Clone)", "") == "Mistroot"))
+            foreach (ParticleMist particleMist in AzuMist.BloomingMists)
             {
                 UpdateMistValues(particleMist);
             }
 
             if (ZNetScene.instance == null) return;
-            // Update all mistroot prefabs
-            GameObject? fab = ZNetScene.instance.GetPrefab("Mistroot");
-            if (fab == null) return;
-            Destructible? d = fab.GetComponent<Destructible>();
+            // Update all mistroot prefabs 
+            GameObject? fab = ZNetScene.instance.GetPrefab("Mistroot"); 
+            if (fab == null) return; 
+            //Destructible? d = fab.GetComponent<Destructible>();
             ParticleMist? thickMist = Utils.FindChild(fab.transform, "ThickMist").GetComponent<ParticleMist>();
-            UpdateMistValues(thickMist);
-            UpdateDestructValues(d);
+            UpdateMistValues(thickMist); 
+            //UpdateDestructValues(d);
         }
 
         private void UpdateMistValues(ParticleMist mist)

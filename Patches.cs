@@ -1,6 +1,5 @@
-﻿using System;
+﻿/*using System;
 using System.Collections;
-using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -11,7 +10,7 @@ namespace MistrootTamer;
  * Start Bloom
  * InBloomTransition
  * Bloomed
- */
+ #1#
 
 [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
 static class ZNetSceneAwakePatch
@@ -19,6 +18,7 @@ static class ZNetSceneAwakePatch
     static void Postfix(ZNetScene __instance)
     {
         GameObject? fab = __instance.GetPrefab("Mistroot");
+        fab.AddComponent<AzuMist>();
         Destructible? destructible = fab.GetComponent<Destructible>();
         destructible.m_hitEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_hitEffect;
         destructible.m_destroyedEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_destroyedEffect;
@@ -65,7 +65,7 @@ static class DestructibleAwakePatch
             animator.SetTrigger("Start Bloom");
         }
     }
-}*/
+}#1#
 /*[HarmonyPatch(typeof(Destructible), nameof(Destructible.Destroy), typeof(Vector3), typeof(Vector3))]
 static class DestructibleDestroyPatch
 {
@@ -108,9 +108,9 @@ static class DestructibleDestroyPatch
             }
         }
     }
-}*/
+}#1#
 
-[HarmonyPatch(typeof(Destructible), nameof(Destructible.Awake))]
+/*[HarmonyPatch(typeof(Destructible), nameof(Destructible.Awake))]
 static class DestructibleAwakePatch
 {
     static void Postfix(Destructible __instance)
@@ -126,7 +126,7 @@ static class DestructibleAwakePatch
 
             __instance.StartCoroutine(TimeToBloom(__instance));
         }
-    }
+    }#1#
 
     /*static void Postfix(Destructible __instance)
     {
@@ -149,14 +149,15 @@ static class DestructibleAwakePatch
                 }
             }
         }
-    }*/
+    }#1#
 
-    internal static IEnumerator TimeToTransition(Destructible d, long delayTicks)
+    /*internal static IEnumerator TimeToTransition(Destructible d, long delayTicks)
     {
         yield return new WaitForSeconds((float)new TimeSpan(delayTicks).TotalSeconds);
         UpdateState(d);
-    }
+    }#1#
 
+    /*
     private static void UpdateState(Destructible d)
     {
         if (d.m_nview.IsValid())
@@ -175,8 +176,9 @@ static class DestructibleAwakePatch
                 // Currently blooming, set for deblooming
             }
         }
-    }
+    }#1#
 
+    /*
     internal static IEnumerator TimeToBloom(Destructible d)
     {
         yield return new WaitForSeconds(DestructibleDestroyPatch.m_ttBloom);
@@ -190,12 +192,12 @@ static class DestructibleAwakePatch
             animator.SetTrigger("Start Bloom");
         }
     }
-}
+}/*
 
 [HarmonyPatch(typeof(Destructible), nameof(Destructible.Destroy), typeof(Vector3), typeof(Vector3))]
 static class DestructibleDestroyPatch
 {
-    public static float m_ttBloom = 60f; // Time to rebloom after being hit
+    /*public static float m_ttBloom = 60f; // Time to rebloom after being hit
 
     static bool Prefix(Destructible __instance)
     {
@@ -220,7 +222,7 @@ static class DestructibleDestroyPatch
         }
 
         return true; // Continue with normal behavior for other objects
-    }
+    }#1#
 
     /*static bool Prefix(Destructible __instance)
     {
@@ -247,8 +249,8 @@ static class DestructibleDestroyPatch
         }
 
         return true; // Continue with normal behavior for other objects
-    }*/
-}
+    }
+}/*
 
 [HarmonyPatch(typeof(ZoneSystem), nameof(ZoneSystem.Start))]
 static class ZoneSystemStartPatch
@@ -352,4 +354,4 @@ static class ParticleMistAwakePatch
             MistrootTamerPlugin.MistrootTamerLogger.LogError(e);
         }
     }
-}
+}*/

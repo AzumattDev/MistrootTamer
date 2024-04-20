@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Configuration;
-using HarmonyLib;
 using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 

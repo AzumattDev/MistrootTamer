@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using JetBrains.Annotations;
 using MistrootTamer;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PieceManager
 {
@@ -65,7 +65,7 @@ namespace PieceManager
         {
             foreach (var material in Resources.FindObjectsOfTypeAll<Material>())
             {
-                if (!OriginalMaterials.ContainsKey(material.name))
+                if (!OriginalMaterials.ContainsKey(material.name) && material.shader?.name != "Hidden/InternalErrorShader")
                 {
                     OriginalMaterials[material.name] = material;
                 }
@@ -121,7 +121,7 @@ namespace PieceManager
             string cleanName = originalMaterial.name.Replace(" (Instance)", "");
             if (OriginalMaterials.TryGetValue(cleanName, out var replacementMaterial))
             {
-                MistrootTamerPlugin.MistrootTamerLogger.LogWarning($"Found {replacementMaterial.name}");
+                MistrootTamerPlugin.MistrootTamerLogger.LogWarning($"Found {replacementMaterial.name}. Replacing {cleanName} with {replacementMaterial.name}, shader is: {replacementMaterial.shader}");
                 return replacementMaterial;
             }
 
