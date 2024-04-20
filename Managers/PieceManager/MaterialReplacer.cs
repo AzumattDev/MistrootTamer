@@ -116,7 +116,7 @@ namespace PieceManager
 
         private static Material ReplaceMaterial(Material originalMaterial, bool isJotunnMock)
         {
-            if (originalMaterial == null) return null;
+            if (originalMaterial == null) return null!;
 
             string cleanName = originalMaterial.name.Replace(" (Instance)", "");
             if (OriginalMaterials.TryGetValue(cleanName, out var replacementMaterial))

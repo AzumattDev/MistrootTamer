@@ -66,7 +66,7 @@ static class ZoneSystemValidatePatch
             m_minAltitude = 0.01f,
             m_maxAltitude = 1000f,
             m_groupSizeMin = 1,
-            m_groupSizeMax = 6,
+            m_groupSizeMax = 3,
             m_groupRadius = 6f,
             m_inForest = false,
             m_forestTresholdMin = 0,
@@ -101,7 +101,7 @@ static class ZoneSystemStartPatch
             m_minAltitude = 0.01f,
             m_maxAltitude = 1000f,
             m_groupSizeMin = 1,
-            m_groupSizeMax = 6,
+            m_groupSizeMax = 3,
             m_groupRadius = 6f,
             m_inForest = false,
             m_forestTresholdMin = 0,
@@ -116,14 +116,13 @@ static class ZoneSystemStartPatch
 [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
 static class ZNetSceneAwakePatch
 {
-    public static EffectList HitEffect;
-    public static EffectList DestroyEffect;
+    public static EffectList HitEffect = null!;
+    public static EffectList DestroyEffect = null!;
 
     static void Postfix(ZNetScene __instance)
     {
         GameObject? fab = __instance.GetPrefab("Mistroot");
         fab.AddComponent<AzuMist>();
-        Object.Destroy(fab.GetComponent<Destructible>());
         HitEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_hitEffect;
         DestroyEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_destroyedEffect;
     }
@@ -137,8 +136,8 @@ public class AzuMist : MonoBehaviour, IDestructible
 
     public static List<ParticleMist> BloomingMists = [];
 
-    private ZNetView _znv;
-    private List<ParticleMist> _mists;
+    private ZNetView _znv = null!;
+    private List<ParticleMist> _mists = null!;
     private static readonly int StartBloom = Animator.StringToHash("Start Bloom");
     private static readonly int StartDebloom = Animator.StringToHash("Start Debloom");
 
@@ -164,6 +163,8 @@ public class AzuMist : MonoBehaviour, IDestructible
     {
         _znv = GetComponent<ZNetView>();
         _mists = this.GetComponentsInChildren<ParticleMist>(true).ToList();
+        if (!_znv || _znv.GetZDO() == null)
+            return;
         if (!_znv.IsValid()) return;
         foreach (var mist in _mists) BloomingMists.Add(mist);
         DoAnimation(0, IsBlooming);
@@ -176,12 +177,10 @@ public class AzuMist : MonoBehaviour, IDestructible
         Animator animator = GetComponent<Animator>();
         if (!isBloom)
         {
-            animator.ResetTrigger(StartDebloom);
             animator.SetTrigger(StartBloom);
         }
         else
         {
-            animator.ResetTrigger(StartBloom);
             animator.SetTrigger(StartDebloom);
         }
     }

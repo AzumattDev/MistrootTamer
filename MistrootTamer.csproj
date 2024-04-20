@@ -12,7 +12,7 @@
         <AssemblyName>MistrootTamer</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -133,7 +133,6 @@
         <Compile Include="Managers\SkillManager.cs"/>
         <Compile Include="Managers\StatusEffectManager.cs"/>
         <Compile Include="AzuMist.cs" />
-        <Compile Include="Patches.cs" />
         <Compile Include="Plugin.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="VersionHandshake.cs"/>
