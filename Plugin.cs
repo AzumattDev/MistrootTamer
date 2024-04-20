@@ -72,34 +72,39 @@ namespace MistrootTamer
             MinSize = config("3 - Demisters", "Min Size", 5f, "Sets the minimum size of mist particles near demisters.");
             MaxSize = config("3 - Demisters", "Max Size", 15f, "Sets the maximum size of mist particles near demisters.");
 
-            DestructibleHealth = config("4 - Destructible Component", "Destructible Health", 500, "Sets the health of plant.");
-            DestructibleBluntModifier = config("4 - Destructible Component", "Destructible Blunt Modifier", HitData.DamageModifier.Normal, "Sets the blunt damage modifier of plant.");
-            DestructibleSlashModifier = config("4 - Destructible Component", "Destructible Slash Modifier", HitData.DamageModifier.Normal, "Sets the slash damage modifier of plant.");
-            DestructiblePierceModifier = config("4 - Destructible Component", "Destructible Pierce Modifier", HitData.DamageModifier.Normal, "Sets the pierce damage modifier of plant.");
-            DestructibleChopModifier = config("4 - Destructible Component", "Destructible Chop Modifier", HitData.DamageModifier.Normal, "Sets the chop damage modifier of plant.");
-            DestructiblePickaxeModifier = config("4 - Destructible Component", "Destructible Pickaxe Modifier", HitData.DamageModifier.Normal, "Sets the pickaxe damage modifier of plant.");
-            DestructibleFireModifier = config("4 - Destructible Component", "Destructible Fire Modifier", HitData.DamageModifier.Normal, "Sets the fire damage modifier of plant.");
-            DestructibleFrostModifier = config("4 - Destructible Component", "Destructible Frost Modifier", HitData.DamageModifier.Normal, "Sets the frost damage modifier of plant.");
-            DestructibleLightningModifier = config("4 - Destructible Component", "Destructible Lightning Modifier", HitData.DamageModifier.Normal, "Sets the lightning damage modifier of plant.");
-            DestructibleSpiritModifier = config("4 - Destructible Component", "Destructible Spirit Modifier", HitData.DamageModifier.Normal, "Sets the spirit damage modifier of plant.");
-            DestructiblePoisonModifier = config("4 - Destructible Component", "Destructible Poison Modifier", HitData.DamageModifier.Normal, "Sets the poison damage modifier of plant.");
-            DestructibleMinimumDamageThreshold = config("4 - Destructible Component", "Destructible Minimum Damage Threshold", 0.0f, "Sets the minimum damage threshold of plant.");
-            DestructibleMinimumToolTier = config("4 - Destructible Component", "Destructible Minimum Tool Tier", 0, "Sets the minimum tool tier of plant. Meaning the minimum strength (tool tier) your weapon must have to begin doing damage.");
-            DestructibleHitNoise = config("4 - Destructible Component", "Destructible Hit Noise", 0.0f, "Sets the distance the noise made when plant is hit plays.");
-            DestructibleDestroyNoise = config("4 - Destructible Component", "Destructible Destroy Noise", 0.0f, "Sets the distance the noise made when plant is destroyed plays.");
-            DestructibleTriggerPrivateArea = config("4 - Destructible Component", "Destructible Trigger Private Area", Toggle.Off, "Sets whether the plant triggers the private area (vanilla wards) when destroyed.");
-            DestructibleTTL = config("4 - Destructible Component", "Destructible TTL", 0.0f, "Sets the time to live of plant. It will auto destroy after this time. (in seconds)");
-            DestructibleSpawnWhenDestroyed = config("4 - Destructible Component", "Destructible Spawn When Destroyed", "", "Sets the prefab to spawn when plant is destroyed. Limited to one prefab. Uses prefab name.");
+            AzuMistHealth = config("4 - AzuMist Component", "AzuMist Health", 100f, "Sets the health of plant.");
+            AzuMistTTB = config("4 - AzuMist Component", "AzuMist Time To Bloom", 600f, "Sets the time to bloom of plant. Default 10 minutes");
+            AzuMistBluntModifier = config("4 - AzuMist Component", "AzuMist Blunt Modifier", HitData.DamageModifier.Normal, "Sets the blunt damage modifier of plant.");
+            AzuMistSlashModifier = config("4 - AzuMist Component", "AzuMist Slash Modifier", HitData.DamageModifier.Normal, "Sets the slash damage modifier of plant.");
+            AzuMistPierceModifier = config("4 - AzuMist Component", "AzuMist Pierce Modifier", HitData.DamageModifier.Normal, "Sets the pierce damage modifier of plant.");
+            AzuMistChopModifier = config("4 - AzuMist Component", "AzuMist Chop Modifier", HitData.DamageModifier.Normal, "Sets the chop damage modifier of plant.");
+            AzuMistPickaxeModifier = config("4 - AzuMist Component", "AzuMist Pickaxe Modifier", HitData.DamageModifier.Normal, "Sets the pickaxe damage modifier of plant.");
+            AzuMistFireModifier = config("4 - AzuMist Component", "AzuMist Fire Modifier", HitData.DamageModifier.Normal, "Sets the fire damage modifier of plant.");
+            AzuMistFrostModifier = config("4 - AzuMist Component", "AzuMist Frost Modifier", HitData.DamageModifier.Normal, "Sets the frost damage modifier of plant.");
+            AzuMistLightningModifier = config("4 - AzuMist Component", "AzuMist Lightning Modifier", HitData.DamageModifier.Normal, "Sets the lightning damage modifier of plant.");
+            AzuMistSpiritModifier = config("4 - AzuMist Component", "AzuMist Spirit Modifier", HitData.DamageModifier.Normal, "Sets the spirit damage modifier of plant.");
+            AzuMistPoisonModifier = config("4 - AzuMist Component", "AzuMist Poison Modifier", HitData.DamageModifier.Normal, "Sets the poison damage modifier of plant.");
+            AzuMistTriggerPrivateArea = config("4 - AzuMist Component", "AzuMist Trigger Private Area", Toggle.Off, "Sets whether the plant triggers the private area (vanilla wards) when destroyed.");
+            AzuMistSpawnWhenDestroyed = config("4 - AzuMist Component", "AzuMist Spawn When Destroyed", "", "Sets the prefab to spawn when plant is destroyed. Limited to one prefab. Uses prefab name.");
 
 
             GameObject fab = PieceManager.PiecePrefabManager.RegisterPrefab("mistroottamer", "Mistroot");
-            var mistToUpdate = Utils.FindChild(fab.transform, "ThickMist").GetComponent<ParticleMist>();
+            var mistToUpdate = Utils.FindChild(fab.transform, "ThickMist_").GetComponent<ParticleMist>();
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "FollowPlayer").gameObject);
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "ThickMist_").gameObject);
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "LocalMist").gameObject);
-            //var destructibleToUpdate = fab.GetComponent<Destructible>();
+            var azuMistToUpdate = fab.GetComponent<AzuMist>();
             UpdateMistValues(mistToUpdate);
-            //UpdateDestructValues(destructibleToUpdate);
+            if (azuMistToUpdate != null)
+            {
+                UpdateAzuMistValues(azuMistToUpdate);
+            }
+            else
+            {
+                azuMistToUpdate = fab.AddComponent<AzuMist>();
+                UpdateAzuMistValues(azuMistToUpdate);
+            }
+
             Biome.SettingChanged += (sender, args) => UpdateMistrootComponents();
             LocalRange.SettingChanged += (sender, args) => UpdateMistrootComponents();
             LocalEmissionRate.SettingChanged += (sender, args) => UpdateMistrootComponents();
@@ -118,24 +123,20 @@ namespace MistrootTamer
             MinSize.SettingChanged += (sender, args) => UpdateMistrootComponents();
             MaxSize.SettingChanged += (sender, args) => UpdateMistrootComponents();
 
-            DestructibleHealth.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleBluntModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleSlashModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructiblePierceModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleChopModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructiblePickaxeModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleFireModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleFrostModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleLightningModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleSpiritModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructiblePoisonModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleMinimumDamageThreshold.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleMinimumToolTier.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleHitNoise.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleDestroyNoise.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleTriggerPrivateArea.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleTTL.SettingChanged += (sender, args) => UpdateMistrootComponents();
-            DestructibleSpawnWhenDestroyed.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistHealth.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistTTB.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistBluntModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistSlashModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistPierceModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistChopModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistPickaxeModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistFireModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistFrostModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistLightningModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistSpiritModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistPoisonModifier.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistTriggerPrivateArea.SettingChanged += (sender, args) => UpdateMistrootComponents();
+            AzuMistSpawnWhenDestroyed.SettingChanged += (sender, args) => UpdateMistrootComponents();
 
 
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -148,8 +149,8 @@ namespace MistrootTamer
                 Config.Save();
             }
         }
-        
-        
+
+
         private void UpdateMistrootComponents()
         {
             foreach (ParticleMist particleMist in AzuMist.BloomingMists)
@@ -159,12 +160,12 @@ namespace MistrootTamer
 
             if (ZNetScene.instance == null) return;
             // Update all mistroot prefabs 
-            GameObject? fab = ZNetScene.instance.GetPrefab("Mistroot"); 
-            if (fab == null) return; 
-            //Destructible? d = fab.GetComponent<Destructible>();
-            ParticleMist? thickMist = Utils.FindChild(fab.transform, "ThickMist").GetComponent<ParticleMist>();
-            UpdateMistValues(thickMist); 
-            //UpdateDestructValues(d);
+            GameObject? fab = ZNetScene.instance.GetPrefab("Mistroot");
+            if (fab == null) return;
+            AzuMist? d = fab.GetComponent<AzuMist>();
+            ParticleMist? thickMist = Utils.FindChild(fab.transform, "ThickMist_").GetComponent<ParticleMist>();
+            UpdateMistValues(thickMist);
+            UpdateAzuMistValues(d);
         }
 
         private void UpdateMistValues(ParticleMist mist)
@@ -190,33 +191,29 @@ namespace MistrootTamer
             mist.m_maxSize = MaxSize.Value;
         }
 
-        private void UpdateDestructValues(Destructible d)
+        internal static void UpdateAzuMistValues(AzuMist d)
         {
-            d.m_health = DestructibleHealth.Value;
-            d.m_damages.m_blunt = DestructibleBluntModifier.Value;
-            d.m_damages.m_slash = DestructibleSlashModifier.Value;
-            d.m_damages.m_pierce = DestructiblePierceModifier.Value;
-            d.m_damages.m_chop = DestructibleChopModifier.Value;
-            d.m_damages.m_pickaxe = DestructiblePickaxeModifier.Value;
-            d.m_damages.m_fire = DestructibleFireModifier.Value;
-            d.m_damages.m_frost = DestructibleFrostModifier.Value;
-            d.m_damages.m_lightning = DestructibleLightningModifier.Value;
-            d.m_damages.m_spirit = DestructibleSpiritModifier.Value;
-            d.m_damages.m_poison = DestructiblePoisonModifier.Value;
-            d.m_minDamageTreshold = DestructibleMinimumDamageThreshold.Value;
-            d.m_minToolTier = DestructibleMinimumToolTier.Value;
-            d.m_hitNoise = DestructibleHitNoise.Value;
-            d.m_destroyNoise = DestructibleDestroyNoise.Value;
-            d.m_triggerPrivateArea = DestructibleTriggerPrivateArea.Value == Toggle.Off;
-            d.m_ttl = DestructibleTTL.Value;
-            if (ZNetScene.instance != null)
+            d.MaxHealth = AzuMistHealth.Value;
+            d.m_ttBloom = AzuMistTTB.Value;
+            d.m_damages.m_blunt = AzuMistBluntModifier.Value;
+            d.m_damages.m_slash = AzuMistSlashModifier.Value;
+            d.m_damages.m_pierce = AzuMistPierceModifier.Value;
+            d.m_damages.m_chop = AzuMistChopModifier.Value;
+            d.m_damages.m_pickaxe = AzuMistPickaxeModifier.Value;
+            d.m_damages.m_fire = AzuMistFireModifier.Value;
+            d.m_damages.m_frost = AzuMistFrostModifier.Value;
+            d.m_damages.m_lightning = AzuMistLightningModifier.Value;
+            d.m_damages.m_spirit = AzuMistSpiritModifier.Value;
+            d.m_damages.m_poison = AzuMistPoisonModifier.Value;
+            d.m_triggerPrivateArea = AzuMistTriggerPrivateArea.Value == Toggle.Off;
+            if (ZNetScene.instance != null && !string.IsNullOrWhiteSpace(AzuMistSpawnWhenDestroyed.Value))
             {
-                GameObject fab = ZNetScene.instance.GetPrefab(DestructibleSpawnWhenDestroyed.Value);
+                GameObject fab = ZNetScene.instance.GetPrefab(AzuMistSpawnWhenDestroyed.Value);
                 if (fab != null)
-                    d.m_spawnWhenDestroyed = fab;
+                    d.m_spawnWhenDebloom = fab;
                 else
                 {
-                    MistrootTamerLogger.LogWarning($"Prefab {DestructibleSpawnWhenDestroyed.Value} not found in ZNetScene.");
+                    MistrootTamerLogger.LogWarning($"Prefab {AzuMistSpawnWhenDestroyed.Value} not found in ZNetScene.");
                 }
             }
         }
@@ -280,35 +277,26 @@ namespace MistrootTamer
         private static ConfigEntry<float> MinSize = null!;
         private static ConfigEntry<float> MaxSize = null!;
 
-        // Destructible
-        private static ConfigEntry<int> DestructibleHealth = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleBluntModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleSlashModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructiblePierceModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleChopModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructiblePickaxeModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleFireModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleFrostModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleLightningModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructibleSpiritModifier = null!;
-        private static ConfigEntry<HitData.DamageModifier> DestructiblePoisonModifier = null!;
-        private static ConfigEntry<float> DestructibleMinimumDamageThreshold = null!;
-        private static ConfigEntry<int> DestructibleMinimumToolTier = null!;
-        private static ConfigEntry<float> DestructibleHitNoise = null!;
-        private static ConfigEntry<float> DestructibleDestroyNoise = null!;
-        private static ConfigEntry<Toggle> DestructibleTriggerPrivateArea = null!;
-        private static ConfigEntry<float> DestructibleTTL = null!;
-        private static ConfigEntry<string> DestructibleSpawnWhenDestroyed = null!;
+        // AzuMist
+        public static ConfigEntry<float> AzuMistHealth = null!;
+        public static ConfigEntry<float> AzuMistTTB = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistBluntModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistSlashModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistPierceModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistChopModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistPickaxeModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistFireModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistFrostModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistLightningModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistSpiritModifier = null!;
+        public static ConfigEntry<HitData.DamageModifier> AzuMistPoisonModifier = null!;
+        public static ConfigEntry<Toggle> AzuMistTriggerPrivateArea = null!;
+        public static ConfigEntry<string> AzuMistSpawnWhenDestroyed = null!;
 
 
-        private ConfigEntry<T> config<T>(string group, string name, T value, ConfigDescription description,
-            bool synchronizedSetting = true)
+        private ConfigEntry<T> config<T>(string group, string name, T value, ConfigDescription description, bool synchronizedSetting = true)
         {
-            ConfigDescription extendedDescription =
-                new(
-                    description.Description +
-                    (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"),
-                    description.AcceptableValues, description.Tags);
+            ConfigDescription extendedDescription = new(description.Description + (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"), description.AcceptableValues, description.Tags);
             ConfigEntry<T> configEntry = Config.Bind(group, name, value, extendedDescription);
             //var configEntry = Config.Bind(group, name, value, description);
 
@@ -318,8 +306,7 @@ namespace MistrootTamer
             return configEntry;
         }
 
-        private ConfigEntry<T> config<T>(string group, string name, T value, string description,
-            bool synchronizedSetting = true)
+        private ConfigEntry<T> config<T>(string group, string name, T value, string description, bool synchronizedSetting = true)
         {
             return config(group, name, value, new ConfigDescription(description), synchronizedSetting);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace MistrootTamer;
@@ -122,7 +123,12 @@ static class ZNetSceneAwakePatch
     static void Postfix(ZNetScene __instance)
     {
         GameObject? fab = __instance.GetPrefab("Mistroot");
-        fab.AddComponent<AzuMist>();
+        if (fab.GetComponent<AzuMist>() == null)
+        {
+            var azuMistToUpdate = fab.AddComponent<AzuMist>();
+            MistrootTamerPlugin.UpdateAzuMistValues(azuMistToUpdate);
+        }
+
         HitEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_hitEffect;
         DestroyEffect = __instance.GetPrefab("Pickable_Flax_Wild").GetComponent<Destructible>().m_destroyedEffect;
     }
@@ -130,11 +136,27 @@ static class ZNetSceneAwakePatch
 
 public class AzuMist : MonoBehaviour, IDestructible
 {
-    public static float m_ttBloom = 60f; // Time to rebloom after being hit
-    public static float MaxHealth = 100f;
+    public float m_ttBloom = MistrootTamerPlugin.AzuMistTTB.Value; // Time to rebloom after being hit
+    public float MaxHealth = MistrootTamerPlugin.AzuMistHealth.Value;
 
+    public HitData.DamageModifiers m_damages = new HitData.DamageModifiers()
+    {
+        m_blunt = MistrootTamerPlugin.AzuMistBluntModifier.Value,
+        m_slash = MistrootTamerPlugin.AzuMistSlashModifier.Value,
+        m_pierce = MistrootTamerPlugin.AzuMistPierceModifier.Value,
+        m_chop = MistrootTamerPlugin.AzuMistChopModifier.Value,
+        m_pickaxe = MistrootTamerPlugin.AzuMistPickaxeModifier.Value,
+        m_fire = MistrootTamerPlugin.AzuMistFireModifier.Value,
+        m_frost = MistrootTamerPlugin.AzuMistFrostModifier.Value,
+        m_lightning = MistrootTamerPlugin.AzuMistLightningModifier.Value,
+        m_poison = MistrootTamerPlugin.AzuMistPoisonModifier.Value,
+        m_spirit = MistrootTamerPlugin.AzuMistSpiritModifier.Value
+    };
 
-    public static List<ParticleMist> BloomingMists = [];
+    public bool m_triggerPrivateArea = MistrootTamerPlugin.AzuMistTriggerPrivateArea.Value == MistrootTamerPlugin.Toggle.On;
+    public GameObject m_spawnWhenDebloom = null!;
+
+    public static readonly List<ParticleMist> BloomingMists = [];
 
     private ZNetView _znv = null!;
     private List<ParticleMist> _mists = null!;
@@ -175,14 +197,7 @@ public class AzuMist : MonoBehaviour, IDestructible
     private void DoAnimation(long sender, bool isBloom)
     {
         Animator animator = GetComponent<Animator>();
-        if (!isBloom)
-        {
-            animator.SetTrigger(StartBloom);
-        }
-        else
-        {
-            animator.SetTrigger(StartDebloom);
-        }
+        animator.SetTrigger(!isBloom ? StartBloom : StartDebloom);
     }
 
     private void FixedUpdate()
@@ -203,15 +218,33 @@ public class AzuMist : MonoBehaviour, IDestructible
         ZNetSceneAwakePatch.HitEffect.Create(transform.position, Quaternion.identity);
 
         if (IsBlooming) return;
+        hit.ApplyResistance(this.m_damages, out HitData.DamageModifier significantModifier);
+        float totalDamage = hit.GetTotalDamage();
+        Health -= totalDamage;
+        DamageText.instance.ShowText(significantModifier, hit.m_point, totalDamage, false);
 
-        float damage = hit.GetTotalDamage();
-        Health -= damage;
-        DamageText.instance.ShowText(HitData.DamageModifier.Normal, hit.m_point, damage, false);
+        if (this.m_triggerPrivateArea)
+        {
+            Character attacker = hit.GetAttacker();
+            if ((bool)(UnityEngine.Object)attacker)
+            {
+                bool destroyed = (double)Health <= 0.0;
+                PrivateArea.OnObjectDamaged(this.transform.position, attacker, destroyed);
+            }
+        }
 
         if (Health > 0f) return;
         IsBlooming = true;
         _znv.InvokeRPC(ZNetView.Everybody, "DoBloomAnimation", IsBlooming);
         ZNetSceneAwakePatch.DestroyEffect.Create(transform.position, Quaternion.identity);
+        if (m_spawnWhenDebloom)
+        {
+            GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.m_spawnWhenDebloom, this.transform.position, this.transform.rotation);
+            gameObject.GetComponent<ZNetView>().SetLocalScale(this.transform.localScale);
+            Gibber component = gameObject.GetComponent<Gibber>();
+            if (component)
+                component.Setup(hit.m_point, hit.m_dir);
+        }
     }
 
     public void Damage(HitData hit)
@@ -222,7 +255,7 @@ public class AzuMist : MonoBehaviour, IDestructible
 
     public DestructibleType GetDestructibleType()
     {
-        return DestructibleType.Default;
+        return DestructibleType.Everything;
     }
 
     private void OnDestroy()
