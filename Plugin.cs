@@ -26,13 +26,6 @@ namespace MistrootTamer
         public static readonly ManualLogSource MistrootTamerLogger = BepInEx.Logging.Logger.CreateLogSource(ModName);
         private static readonly ConfigSync ConfigSync = new(ModGUID) { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion };
 
-        // Location Manager variables
-        public Texture2D tex = null!;
-
-        // Use only if you need them
-        //private Sprite mySprite = null!;
-        //private SpriteRenderer sr = null!;
-
         public enum Toggle
         {
             On = 1,
@@ -41,7 +34,6 @@ namespace MistrootTamer
 
         public void Awake()
         {
-            //Localizer.Load();
             bool saveOnSet = Config.SaveOnConfigSet;
             Config.SaveOnConfigSet = false;
 
@@ -72,20 +64,20 @@ namespace MistrootTamer
             MinSize = config("3 - Demisters", "Min Size", 5f, "Sets the minimum size of mist particles near demisters.");
             MaxSize = config("3 - Demisters", "Max Size", 15f, "Sets the maximum size of mist particles near demisters.");
 
-            AzuMistHealth = config("4 - AzuMist Component", "AzuMist Health", 100f, "Sets the health of plant.");
-            AzuMistTTB = config("4 - AzuMist Component", "AzuMist Time To Bloom", 600f, "Sets the time to bloom of plant. Default 10 minutes");
-            AzuMistBluntModifier = config("4 - AzuMist Component", "AzuMist Blunt Modifier", HitData.DamageModifier.Normal, "Sets the blunt damage modifier of plant.");
-            AzuMistSlashModifier = config("4 - AzuMist Component", "AzuMist Slash Modifier", HitData.DamageModifier.Normal, "Sets the slash damage modifier of plant.");
-            AzuMistPierceModifier = config("4 - AzuMist Component", "AzuMist Pierce Modifier", HitData.DamageModifier.Normal, "Sets the pierce damage modifier of plant.");
-            AzuMistChopModifier = config("4 - AzuMist Component", "AzuMist Chop Modifier", HitData.DamageModifier.Normal, "Sets the chop damage modifier of plant.");
-            AzuMistPickaxeModifier = config("4 - AzuMist Component", "AzuMist Pickaxe Modifier", HitData.DamageModifier.Normal, "Sets the pickaxe damage modifier of plant.");
-            AzuMistFireModifier = config("4 - AzuMist Component", "AzuMist Fire Modifier", HitData.DamageModifier.Normal, "Sets the fire damage modifier of plant.");
-            AzuMistFrostModifier = config("4 - AzuMist Component", "AzuMist Frost Modifier", HitData.DamageModifier.Normal, "Sets the frost damage modifier of plant.");
-            AzuMistLightningModifier = config("4 - AzuMist Component", "AzuMist Lightning Modifier", HitData.DamageModifier.Normal, "Sets the lightning damage modifier of plant.");
-            AzuMistSpiritModifier = config("4 - AzuMist Component", "AzuMist Spirit Modifier", HitData.DamageModifier.Normal, "Sets the spirit damage modifier of plant.");
-            AzuMistPoisonModifier = config("4 - AzuMist Component", "AzuMist Poison Modifier", HitData.DamageModifier.Normal, "Sets the poison damage modifier of plant.");
-            AzuMistTriggerPrivateArea = config("4 - AzuMist Component", "AzuMist Trigger Private Area", Toggle.Off, "Sets whether the plant triggers the private area (vanilla wards) when destroyed.");
-            AzuMistSpawnWhenDestroyed = config("4 - AzuMist Component", "AzuMist Spawn When Destroyed", "", "Sets the prefab to spawn when plant is destroyed. Limited to one prefab. Uses prefab name.");
+            AzuMistHealth = config("4 - Mistroot", "Mistroot Health", 100f, "Sets the health of the plant.");
+            AzuMistTTB = config("4 - Mistroot", "Mistroot Time To Bloom", 600f, "Sets the time to bloom of the plant. Default 10 minutes");
+            AzuMistBluntModifier = config("4 - Mistroot", "Mistroot Blunt Modifier", HitData.DamageModifier.Normal, "Sets the blunt damage modifier of the plant.");
+            AzuMistSlashModifier = config("4 - Mistroot", "Mistroot Slash Modifier", HitData.DamageModifier.Normal, "Sets the slash damage modifier of the plant.");
+            AzuMistPierceModifier = config("4 - Mistroot", "Mistroot Pierce Modifier", HitData.DamageModifier.Normal, "Sets the pierce damage modifier of the plant.");
+            AzuMistChopModifier = config("4 - Mistroot", "Mistroot Chop Modifier", HitData.DamageModifier.Normal, "Sets the chop damage modifier of the plant.");
+            AzuMistPickaxeModifier = config("4 - Mistroot", "Mistroot Pickaxe Modifier", HitData.DamageModifier.Normal, "Sets the pickaxe damage modifier of the plant.");
+            AzuMistFireModifier = config("4 - Mistroot", "Mistroot Fire Modifier", HitData.DamageModifier.Normal, "Sets the fire damage modifier of the plant.");
+            AzuMistFrostModifier = config("4 - Mistroot", "Mistroot Frost Modifier", HitData.DamageModifier.Normal, "Sets the frost damage modifier of the plant.");
+            AzuMistLightningModifier = config("4 - Mistroot", "Mistroot Lightning Modifier", HitData.DamageModifier.Normal, "Sets the lightning damage modifier of the plant.");
+            AzuMistSpiritModifier = config("4 - Mistroot", "Mistroot Spirit Modifier", HitData.DamageModifier.Normal, "Sets the spirit damage modifier of the plant.");
+            AzuMistPoisonModifier = config("4 - Mistroot", "Mistroot Poison Modifier", HitData.DamageModifier.Normal, "Sets the poison damage modifier of the plant.");
+            AzuMistTriggerPrivateArea = config("4 - Mistroot", "Mistroot Trigger Private Area", Toggle.Off, "Sets whether the plant triggers the private area (vanilla wards) when destroyed.");
+            AzuMistSpawnWhenDestroyed = config("4 - Mistroot", "Mistroot Spawn When Destroyed", "", "Sets the prefab to spawn when plant is de-bloomed. Limited to one prefab. Uses prefab name.");
 
 
             GameObject fab = PieceManager.PiecePrefabManager.RegisterPrefab("mistroottamer", "Mistroot");
@@ -298,8 +290,6 @@ namespace MistrootTamer
         {
             ConfigDescription extendedDescription = new(description.Description + (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"), description.AcceptableValues, description.Tags);
             ConfigEntry<T> configEntry = Config.Bind(group, name, value, extendedDescription);
-            //var configEntry = Config.Bind(group, name, value, description);
-
             SyncedConfigEntry<T> syncedConfigEntry = ConfigSync.AddConfigEntry(configEntry);
             syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
 
@@ -319,32 +309,6 @@ namespace MistrootTamer
             [UsedImplicitly] public Action<ConfigEntryBase>? CustomDrawer = null!;
         }
 
-        class AcceptableShortcuts : AcceptableValueBase
-        {
-            public AcceptableShortcuts() : base(typeof(KeyboardShortcut))
-            {
-            }
-
-            public override object Clamp(object value) => value;
-            public override bool IsValid(object value) => true;
-
-            public override string ToDescriptionString() =>
-                "# Acceptable values: " + string.Join(", ", UnityInput.Current.SupportedKeyCodes);
-        }
-
         #endregion
-    }
-
-    public static class KeyboardExtensions
-    {
-        public static bool IsKeyDown(this KeyboardShortcut shortcut)
-        {
-            return shortcut.MainKey != KeyCode.None && Input.GetKeyDown(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
-        }
-
-        public static bool IsKeyHeld(this KeyboardShortcut shortcut)
-        {
-            return shortcut.MainKey != KeyCode.None && Input.GetKey(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
-        }
     }
 }

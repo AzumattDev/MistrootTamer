@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace MistrootTamer
 {
@@ -38,8 +34,7 @@ namespace MistrootTamer
 
         private static void Postfix(ZNet __instance)
         {
-            ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.instance.GetServerPeerID(), $"{MistrootTamerPlugin.ModName}RequestAdminSync",
-                new ZPackage());
+            ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.instance.GetServerPeerID(), $"{MistrootTamerPlugin.ModName}RequestAdminSync", new ZPackage());
         }
     }
 
@@ -52,7 +47,7 @@ namespace MistrootTamer
             {
                 __instance.m_connectionFailedError.fontSizeMax = 25;
                 __instance.m_connectionFailedError.fontSizeMin = 15;
-                __instance.m_connectionFailedError.text += "\n" + MistrootTamerPlugin.ConnectionError;
+                __instance.m_connectionFailedError.text += $"\n{MistrootTamerPlugin.ConnectionError}";
             }
         }
     }
@@ -77,9 +72,7 @@ namespace MistrootTamer
         {
             string? version = pkg.ReadString();
 
-            MistrootTamerPlugin.MistrootTamerLogger.LogInfo("Version check, local: " +
-                                                            MistrootTamerPlugin.ModVersion +
-                                                            ",  remote: " + version);
+            MistrootTamerPlugin.MistrootTamerLogger.LogInfo($"Version check, local: {MistrootTamerPlugin.ModVersion},  remote: {version}");
             if (version != MistrootTamerPlugin.ModVersion)
             {
                 MistrootTamerPlugin.ConnectionError = $"{MistrootTamerPlugin.ModName} Installed: {MistrootTamerPlugin.ModVersion}\n Needed: {version}";
@@ -93,14 +86,12 @@ namespace MistrootTamer
                 if (!ZNet.instance.IsServer())
                 {
                     // Enable mod on client if versions match
-                    MistrootTamerPlugin.MistrootTamerLogger.LogInfo(
-                        "Received same version from server!");
+                    MistrootTamerPlugin.MistrootTamerLogger.LogInfo("Received same version from server!");
                 }
                 else
                 {
                     // Add client to validated list
-                    MistrootTamerPlugin.MistrootTamerLogger.LogInfo(
-                        $"Adding peer ({rpc.m_socket.GetHostName()}) to validated list");
+                    MistrootTamerPlugin.MistrootTamerLogger.LogInfo($"Adding peer ({rpc.m_socket.GetHostName()}) to validated list");
                     ValidatedPeers.Add(rpc);
                 }
             }

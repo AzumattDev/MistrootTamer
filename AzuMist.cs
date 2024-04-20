@@ -123,6 +123,8 @@ static class ZNetSceneAwakePatch
     static void Postfix(ZNetScene __instance)
     {
         GameObject? fab = __instance.GetPrefab("Mistroot");
+        var hover = fab.AddComponent<HoverText>();
+        hover.m_text = "Mistroot";
         if (fab.GetComponent<AzuMist>() == null)
         {
             var azuMistToUpdate = fab.AddComponent<AzuMist>();

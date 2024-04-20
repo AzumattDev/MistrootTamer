@@ -121,7 +121,7 @@ namespace PieceManager
             string cleanName = originalMaterial.name.Replace(" (Instance)", "");
             if (OriginalMaterials.TryGetValue(cleanName, out var replacementMaterial))
             {
-                MistrootTamerPlugin.MistrootTamerLogger.LogWarning($"Found {replacementMaterial.name}. Replacing {cleanName} with {replacementMaterial.name}, shader is: {replacementMaterial.shader}");
+                MistrootTamerPlugin.MistrootTamerLogger.LogDebug($"Found {replacementMaterial.name}. Replacing {cleanName} with {replacementMaterial.name}, shader is: {replacementMaterial.shader}");
                 return replacementMaterial;
             }
 
