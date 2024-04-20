@@ -5,19 +5,11 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using CreatureManager;
 using HarmonyLib;
-using ItemManager;
 using JetBrains.Annotations;
-using LocalizationManager;
-using LocationManager;
 using PieceManager;
 using ServerSync;
-using SkillManager;
-using StatusEffectManager;
 using UnityEngine;
-using PrefabManager = ItemManager.PrefabManager;
-using Range = LocationManager.Range;
 
 namespace MistrootTamer
 {
@@ -103,9 +95,9 @@ namespace MistrootTamer
 
             GameObject fab = PieceManager.PiecePrefabManager.RegisterPrefab("mistroottamer", "Mistroot");
             var mistToUpdate = Utils.FindChild(fab.transform, "ThickMist").GetComponent<ParticleMist>();
-          //MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "FollowPlayer").gameObject);
-          //MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "ThickMist_").gameObject);
-          //MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "LocalMist").gameObject);
+            MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "FollowPlayer").gameObject);
+            MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "ThickMist_").gameObject);
+            MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "LocalMist").gameObject);
             var destructibleToUpdate = fab.GetComponent<Destructible>();
             UpdateMistValues(mistToUpdate);
             UpdateDestructValues(destructibleToUpdate);

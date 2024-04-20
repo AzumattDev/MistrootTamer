@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using JetBrains.Annotations;
+using MistrootTamer;
 using UnityEngine;
 
 namespace PieceManager
@@ -120,6 +121,7 @@ namespace PieceManager
             string cleanName = originalMaterial.name.Replace(" (Instance)", "");
             if (OriginalMaterials.TryGetValue(cleanName, out var replacementMaterial))
             {
+                MistrootTamerPlugin.MistrootTamerLogger.LogWarning($"Found {replacementMaterial.name}");
                 return replacementMaterial;
             }
 

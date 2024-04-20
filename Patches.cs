@@ -5,11 +5,13 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MistrootTamer;
-
-// Start Bloom
-// InBloomTransition
-// Start Debloom
-// Bloomed
+/* Animation Triggers
+ ********************
+ * Start Debloom
+ * Start Bloom
+ * InBloomTransition
+ * Bloomed
+ */
 
 [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
 static class ZNetSceneAwakePatch
@@ -23,7 +25,7 @@ static class ZNetSceneAwakePatch
     }
 }
 
-[HarmonyPatch(typeof(Destructible), nameof(Destructible.Awake))]
+/*[HarmonyPatch(typeof(Destructible), nameof(Destructible.Awake))]
 static class DestructibleAwakePatch
 {
     // Coroutine to bloom the mistroot after a certain time
@@ -63,9 +65,8 @@ static class DestructibleAwakePatch
             animator.SetTrigger("Start Bloom");
         }
     }
-}
-
-[HarmonyPatch(typeof(Destructible), nameof(Destructible.Destroy), typeof(Vector3), typeof(Vector3))]
+}*/
+/*[HarmonyPatch(typeof(Destructible), nameof(Destructible.Destroy), typeof(Vector3), typeof(Vector3))]
 static class DestructibleDestroyPatch
 {
     public static float m_ttBloom = 10f; // Time to rebloom after being hit
@@ -107,6 +108,146 @@ static class DestructibleDestroyPatch
             }
         }
     }
+}*/
+
+[HarmonyPatch(typeof(Destructible), nameof(Destructible.Awake))]
+static class DestructibleAwakePatch
+{
+    static void Postfix(Destructible __instance)
+    {
+        if (__instance.gameObject.name.Replace("(Clone)", "") == "Mistroot")
+        {
+            // Initialize ZDO properties
+            if (__instance.m_nview.IsValid() && __instance.m_nview.GetZDO() != null)
+            {
+                __instance.m_nview.GetZDO().Set("IsDeblooming", false);
+                __instance.m_nview.GetZDO().Set("IsBlooming", true);
+            }
+
+            __instance.StartCoroutine(TimeToBloom(__instance));
+        }
+    }
+
+    /*static void Postfix(Destructible __instance)
+    {
+        if (__instance.gameObject.name.Replace("(Clone)", "") == "Mistroot")
+        {
+            if (__instance.m_nview.IsValid() && __instance.m_nview.GetZDO() != null)
+            {
+                long currentServerTime = ZNet.instance.GetTime().Ticks;
+                long storedTransitionTime = __instance.m_nview.GetZDO().GetLong("NextTransitionTime", currentServerTime);
+
+                if (storedTransitionTime > currentServerTime)
+                {
+                    // Wait until the stored transition time to make changes
+                    __instance.StartCoroutine(TimeToTransition(__instance, storedTransitionTime - currentServerTime));
+                }
+                else
+                {
+                    // If time has passed, trigger appropriate state change
+                    UpdateState(__instance);
+                }
+            }
+        }
+    }*/
+
+    internal static IEnumerator TimeToTransition(Destructible d, long delayTicks)
+    {
+        yield return new WaitForSeconds((float)new TimeSpan(delayTicks).TotalSeconds);
+        UpdateState(d);
+    }
+
+    private static void UpdateState(Destructible d)
+    {
+        if (d.m_nview.IsValid())
+        {
+            bool isDeblooming = d.m_nview.GetZDO().GetBool("IsDeblooming", false);
+            if (isDeblooming)
+            {
+                // Transition from deblooming to blooming
+                d.m_nview.GetZDO().Set("IsBlooming", true);
+                d.m_nview.GetZDO().Set("IsDeblooming", false);
+                Animator? animator = d.gameObject.GetComponent<Animator>();
+                animator.SetTrigger("Start Bloom");
+            }
+            else
+            {
+                // Currently blooming, set for deblooming
+            }
+        }
+    }
+
+    internal static IEnumerator TimeToBloom(Destructible d)
+    {
+        yield return new WaitForSeconds(DestructibleDestroyPatch.m_ttBloom);
+        if (d.m_nview.IsValid() && d.m_nview.IsOwner() && d.m_nview.GetZDO().GetBool("IsDeblooming"))
+        {
+            d.m_nview.GetZDO().Set("IsBlooming", true);
+            d.m_nview.GetZDO().Set("IsDeblooming", false);
+            d.m_nview.GetZDO().Set(ZDOVars.s_health, d.m_health); // Reset health
+            // Trigger bloom animation
+            Animator? animator = d.gameObject.GetComponent<Animator>();
+            animator.SetTrigger("Start Bloom");
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Destructible), nameof(Destructible.Destroy), typeof(Vector3), typeof(Vector3))]
+static class DestructibleDestroyPatch
+{
+    public static float m_ttBloom = 60f; // Time to rebloom after being hit
+
+    static bool Prefix(Destructible __instance)
+    {
+        if (__instance.gameObject.name.Replace("(Clone)", "") == "Mistroot")
+        {
+            // Check and set flags to control bloom behavior
+            if (__instance.m_nview.IsValid() && __instance.m_nview.IsOwner())
+            {
+                if (!__instance.m_nview.GetZDO().GetBool("IsDeblooming") && __instance.m_nview.GetZDO().GetBool("IsBlooming"))
+                {
+                    __instance.m_nview.GetZDO().Set("IsDeblooming", true);
+                    __instance.m_nview.GetZDO().Set("IsBlooming", false);
+                    // Trigger debloom animation
+                    Animator? animator = __instance.gameObject.GetComponent<Animator>();
+                    animator.SetTrigger("Start Debloom");
+                }
+
+                __instance.StartCoroutine(DestructibleAwakePatch.TimeToBloom(__instance));
+            }
+
+            return false; // Prevent the default destroy behavior
+        }
+
+        return true; // Continue with normal behavior for other objects
+    }
+
+    /*static bool Prefix(Destructible __instance)
+    {
+        if (__instance.gameObject.name.Replace("(Clone)", "") == "Mistroot")
+        {
+            if (__instance.m_nview.IsValid() && __instance.m_nview.IsOwner())
+            {
+                ZDO zdo = __instance.m_nview.GetZDO();
+                if (!zdo.GetBool("IsDeblooming") && zdo.GetBool("IsBlooming"))
+                {
+                    long nextTransitionTime = ZNet.instance.GetTime().Ticks + TimeSpan.FromSeconds(m_ttBloom).Ticks;
+                    zdo.Set("NextTransitionTime", nextTransitionTime);
+                    zdo.Set("IsDeblooming", true);
+                    zdo.Set("IsBlooming", false);
+
+                    Animator? animator = __instance.gameObject.GetComponent<Animator>();
+                    animator.SetTrigger("Start Debloom");
+
+                    __instance.StartCoroutine(DestructibleAwakePatch.TimeToTransition(__instance, TimeSpan.FromSeconds(m_ttBloom).Ticks));
+                }
+
+                return false; // Prevent the default destroy behavior
+            }
+        }
+
+        return true; // Continue with normal behavior for other objects
+    }*/
 }
 
 [HarmonyPatch(typeof(ZoneSystem), nameof(ZoneSystem.Start))]
