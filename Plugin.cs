@@ -97,9 +97,9 @@ namespace MistrootTamer
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "FollowPlayer").gameObject);
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "ThickMist_").gameObject);
             MaterialReplacer.RegisterGameObjectForMatSwap(Utils.FindChild(fab.transform, "LocalMist").gameObject);
-            var destructibleToUpdate = fab.GetComponent<Destructible>();
+            //var destructibleToUpdate = fab.GetComponent<Destructible>();
             UpdateMistValues(mistToUpdate);
-            UpdateDestructValues(destructibleToUpdate);
+            //UpdateDestructValues(destructibleToUpdate);
             Biome.SettingChanged += (sender, args) => UpdateMistrootComponents();
             LocalRange.SettingChanged += (sender, args) => UpdateMistrootComponents();
             LocalEmissionRate.SettingChanged += (sender, args) => UpdateMistrootComponents();

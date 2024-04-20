@@ -222,7 +222,7 @@ public class AzuMist : MonoBehaviour, IDestructible
 
     public DestructibleType GetDestructibleType()
     {
-        return DestructibleType.Tree;
+        return DestructibleType.Default;
     }
 
     private void OnDestroy()
