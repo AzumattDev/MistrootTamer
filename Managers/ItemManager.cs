@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using BepInEx;
 using BepInEx.Configuration;
-using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
 

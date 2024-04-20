@@ -10,16 +10,16 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>MistrootTamer</RootNamespace>
         <AssemblyName>MistrootTamer</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <LangVersion>10</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
+        <Optimize>true</Optimize>
         <OutputPath>bin\Debug\</OutputPath>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
@@ -123,6 +123,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="GlobalUsings.cs" />
         <Compile Include="Managers\ItemDataManager.cs"/>
         <Compile Include="Managers\ItemManager.cs"/>
         <Compile Include="Managers\LocalizationManager.cs"/>
@@ -131,6 +132,7 @@
         <Compile Include="Managers\PieceManager\PieceManager.cs"/>
         <Compile Include="Managers\SkillManager.cs"/>
         <Compile Include="Managers\StatusEffectManager.cs"/>
+        <Compile Include="AzuMist.cs" />
         <Compile Include="Patches.cs" />
         <Compile Include="Plugin.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
@@ -165,6 +167,8 @@
         <Content Include="Libs\SkillManager.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+
+  
         <Content Include="LICENSE.md"/>
         <Content Include="README.md"/>
         <Content Include="Thunderstore\CHANGELOG.md"/>
@@ -173,6 +177,9 @@
         <EmbeddedResource Include="translations\English.yml"/>
         <Content Include="UpdateManifest.ps1"/>
     </ItemGroup>
+    <Target Name="Copy" AfterTargets="Build">
+        <Exec Command="copy /Y &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepInEx\plugins\$(AssemblyName).dll&quot;" />
+    </Target>
     <ItemGroup>
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
         <PackageReference Include="YamlDotNet" Version="13.2.0"/>
