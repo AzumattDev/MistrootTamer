@@ -1,6 +1,6 @@
 {
   "name": "MistrootTamer",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://discord.gg/pdHgy6Bsng",
   "description": "MistrootTamer transforms the Mistlands biome in Valheim by centralizing mist generation around dynamic plants called Mistroots. This mod replaces the biome's global mist with localized sources, enhancing interaction and visual engagement.",
   "dependencies": [

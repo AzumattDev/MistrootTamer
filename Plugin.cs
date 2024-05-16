@@ -16,7 +16,7 @@ namespace MistrootTamer
     public class MistrootTamerPlugin : BaseUnityPlugin
     {
         internal const string ModName = "MistrootTamer";
-        internal const string ModVersion = "1.0.1";
+        internal const string ModVersion = "1.0.2";
         internal const string Author = "Azumatt";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";
@@ -43,7 +43,7 @@ namespace MistrootTamer
 
             // General settings for the mist effect
             Biome = config("1 - General", "Biome", Heightmap.Biome.Mistlands, "Defines the biome where the mist effect is active.");
-            LocalRange = config("1 - General", "Local Range", 15f, "Sets the radius around the player within which mist particles are generated.");
+            LocalRange = config("1 - General", "Local Range", 30f, "Sets the radius around the player within which mist particles are generated.");
             LocalEmissionRate = config("1 - General", "Local Emission Rate", 50, "Controls the base rate of mist particle generation around the player.");
             LocalEmissionPerUnit = config("1 - General", "Local Emission Per Unit", 30, "Determines the number of mist particles generated per unit of movement or time.");
             MaxMistAltitude = config("1 - General", "Max Mist Altitude", 10f, "Specifies the maximum height above the ground at which mist can appear.");
