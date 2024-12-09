@@ -228,7 +228,7 @@ public class AzuMist : MonoBehaviour, IDestructible
         if (this.m_triggerPrivateArea)
         {
             Character attacker = hit.GetAttacker();
-            if ((bool)(UnityEngine.Object)attacker)
+            if (attacker)
             {
                 bool destroyed = (double)Health <= 0.0;
                 PrivateArea.OnObjectDamaged(this.transform.position, attacker, destroyed);
