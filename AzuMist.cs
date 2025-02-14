@@ -45,6 +45,32 @@ static class MistEmitterAwakePatch
     }
 }
 
+[HarmonyPatch(typeof(Mister),nameof(Mister.Awake))]
+static class DestroyIfNotMistRootMisterAwakePatch
+{
+    static void Prefix(Mister __instance)
+    {
+        if (__instance.GetComponent<AzuMist>() == null)
+        {
+            __instance.enabled = false;
+            //GameObject.Destroy(__instance);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Mister),nameof(Mister.OnEnable))]
+static class DisableIfNotMistRootMisterAwakePatch
+{
+    static void Prefix(Mister __instance)
+    {
+        if (__instance.GetComponent<AzuMist>() == null)
+        {
+            __instance.enabled = false;
+            //GameObject.Destroy(__instance);
+        }
+    }
+}
+
 [HarmonyPatch(typeof(ZoneSystem), nameof(ZoneSystem.ValidateVegetation))]
 static class ZoneSystemValidatePatch
 {
@@ -61,7 +87,7 @@ static class ZoneSystemValidatePatch
             m_scaleMin = 1f,
             m_scaleMax = 1.75f,
             m_chanceToUseGroundTilt = 0,
-            m_biome = Heightmap.Biome.Mistlands,
+            m_biome = MistrootTamerPlugin.Biome.Value,
             m_biomeArea = Heightmap.BiomeArea.Everything,
             m_blockCheck = true,
             m_minAltitude = 0.01f,
@@ -96,7 +122,7 @@ static class ZoneSystemStartPatch
             m_scaleMin = 1f,
             m_scaleMax = 1.75f,
             m_chanceToUseGroundTilt = 0,
-            m_biome = Heightmap.Biome.Mistlands,
+            m_biome = MistrootTamerPlugin.Biome.Value,
             m_biomeArea = Heightmap.BiomeArea.Everything,
             m_blockCheck = true,
             m_minAltitude = 0.01f,
@@ -187,6 +213,12 @@ public class AzuMist : MonoBehaviour, IDestructible
     {
         _znv = GetComponent<ZNetView>();
         _mists = this.GetComponentsInChildren<ParticleMist>(true).ToList();
+        if (this.GetComponent<Mister>() == null)
+        {
+            if (MistrootTamerPlugin.Biome.Value != Heightmap.Biome.Mistlands)
+                this.gameObject.AddComponent<Mister>();
+        }
+
         if (!_znv || _znv.GetZDO() == null)
             return;
         if (!_znv.IsValid()) return;
@@ -194,6 +226,7 @@ public class AzuMist : MonoBehaviour, IDestructible
         DoAnimation(0, IsBlooming);
         _znv.Register<bool>("DoBloomAnimation", DoAnimation);
         _znv.Register<HitData>("Damage", OnDamage);
+        MistrootTamerPlugin.instance.UpdateMistrootComponents();
     }
 
     private void DoAnimation(long sender, bool isBloom)

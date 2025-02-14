@@ -16,7 +16,7 @@ namespace MistrootTamer
     public class MistrootTamerPlugin : BaseUnityPlugin
     {
         internal const string ModName = "MistrootTamer";
-        internal const string ModVersion = "1.0.3";
+        internal const string ModVersion = "1.0.4";
         internal const string Author = "Azumatt";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";
@@ -25,6 +25,7 @@ namespace MistrootTamer
         private readonly Harmony _harmony = new(ModGUID);
         public static readonly ManualLogSource MistrootTamerLogger = BepInEx.Logging.Logger.CreateLogSource(ModName);
         private static readonly ConfigSync ConfigSync = new(ModGUID) { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion };
+        public static MistrootTamerPlugin instance;
 
         public enum Toggle
         {
@@ -34,6 +35,7 @@ namespace MistrootTamer
 
         public void Awake()
         {
+            instance = this;
             bool saveOnSet = Config.SaveOnConfigSet;
             Config.SaveOnConfigSet = false;
 
@@ -143,7 +145,7 @@ namespace MistrootTamer
         }
 
 
-        private void UpdateMistrootComponents()
+        internal void UpdateMistrootComponents()
         {
             foreach (ParticleMist particleMist in AzuMist.BloomingMists)
             {
@@ -160,7 +162,7 @@ namespace MistrootTamer
             UpdateAzuMistValues(d);
         }
 
-        private void UpdateMistValues(ParticleMist mist)
+        internal void UpdateMistValues(ParticleMist mist)
         {
             mist.m_biome = Biome.Value;
             mist.m_localRange = LocalRange.Value;
@@ -197,7 +199,7 @@ namespace MistrootTamer
             d.m_damages.m_lightning = AzuMistLightningModifier.Value;
             d.m_damages.m_spirit = AzuMistSpiritModifier.Value;
             d.m_damages.m_poison = AzuMistPoisonModifier.Value;
-            d.m_triggerPrivateArea = AzuMistTriggerPrivateArea.Value == Toggle.Off;
+            d.m_triggerPrivateArea = AzuMistTriggerPrivateArea.Value == Toggle.On;
             if (ZNetScene.instance != null && !string.IsNullOrWhiteSpace(AzuMistSpawnWhenDestroyed.Value))
             {
                 GameObject fab = ZNetScene.instance.GetPrefab(AzuMistSpawnWhenDestroyed.Value);
@@ -245,7 +247,7 @@ namespace MistrootTamer
         #region ConfigOptions
 
         private static ConfigEntry<Toggle> _serverConfigLocked = null!;
-        private static ConfigEntry<Heightmap.Biome> Biome = null!;
+        internal static ConfigEntry<Heightmap.Biome> Biome = null!;
         private static ConfigEntry<float> LocalRange = null!;
         private static ConfigEntry<int> LocalEmissionRate = null!;
         private static ConfigEntry<int> LocalEmissionPerUnit = null!;
