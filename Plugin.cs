@@ -16,7 +16,7 @@ namespace MistrootTamer
     public class MistrootTamerPlugin : BaseUnityPlugin
     {
         internal const string ModName = "MistrootTamer";
-        internal const string ModVersion = "1.0.4";
+        internal const string ModVersion = "1.0.6";
         internal const string Author = "Azumatt";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";
@@ -25,7 +25,7 @@ namespace MistrootTamer
         private readonly Harmony _harmony = new(ModGUID);
         public static readonly ManualLogSource MistrootTamerLogger = BepInEx.Logging.Logger.CreateLogSource(ModName);
         private static readonly ConfigSync ConfigSync = new(ModGUID) { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion };
-        public static MistrootTamerPlugin instance;
+        public static MistrootTamerPlugin instance = null!;
 
         public enum Toggle
         {

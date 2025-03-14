@@ -45,7 +45,7 @@ static class MistEmitterAwakePatch
     }
 }
 
-[HarmonyPatch(typeof(Mister),nameof(Mister.Awake))]
+[HarmonyPatch(typeof(Mister), nameof(Mister.Awake))]
 static class DestroyIfNotMistRootMisterAwakePatch
 {
     static void Prefix(Mister __instance)
@@ -58,7 +58,7 @@ static class DestroyIfNotMistRootMisterAwakePatch
     }
 }
 
-[HarmonyPatch(typeof(Mister),nameof(Mister.OnEnable))]
+[HarmonyPatch(typeof(Mister), nameof(Mister.OnEnable))]
 static class DisableIfNotMistRootMisterAwakePatch
 {
     static void Prefix(Mister __instance)
@@ -215,8 +215,7 @@ public class AzuMist : MonoBehaviour, IDestructible
         _mists = this.GetComponentsInChildren<ParticleMist>(true).ToList();
         if (this.GetComponent<Mister>() == null)
         {
-            if (MistrootTamerPlugin.Biome.Value != Heightmap.Biome.Mistlands)
-                this.gameObject.AddComponent<Mister>();
+            this.gameObject.AddComponent<Mister>();
         }
 
         if (!_znv || _znv.GetZDO() == null)
